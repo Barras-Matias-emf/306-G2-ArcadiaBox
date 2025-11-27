@@ -24,11 +24,15 @@ Suivi du travail effectué : tâches réalisées, décisions prises, obstacles r
 
 #### **3.2 Planning**
 
-Planification du projet : répartition des tâches, échéances, diagrammes ou tableaux d’organisation.
+Planification du projet : répartition des tâches, échéances, diagrammes ou tableaux d’organisation. Il y a deux modèles de planning dépendant des jours de module (lundi, mardi ou jeudi, vendredi).
 
 ### **4. Web Summary**
 
 Résumé final du projet, sous une forme synthétique et visuelle, destiné à présenter son résultat global.
+
+### **5. Analyses UML**
+
+Fichier modèle de base Enterprise Architecte pour réaliser l'analyse et la conception UML de votre projet. Toutes les diagrammes devront être repris dans votre documentation de projet.
 
 ---
 
