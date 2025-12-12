@@ -1,20 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ArcadiaBox</title>
-
-  <!-- <link rel="stylesheet" href="../data/emulator.css"> -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ArcadiaBox – Tetris OCR (stable)</title>
+<link rel="stylesheet" href="./../EmulatorJS-4.2.3/data/emulator.css">
+<style>
+  #ocr-debug {
+    position: fixed; right: 10px; bottom: 10px; z-index: 99999;
+    background: #111; color: #eee; padding: 10px; border-radius: 12px;
+    font: 12px/1.3 monospace; width: 320px; box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  #ocr-debug canvas { width: 100%; image-rendering: pixelated; border: 1px solid #333; border-radius: 10px; margin-top: 6px; }
+  #ocr-debug .row { opacity: .9; margin-top: 6px; }
+</style>
 </head>
 
 <body>
-  <div style="width:640px;height:480px;max-width:100%">
-    <div id="Tetris"></div>
-  </div>
+<div style="width:640px;height:480px;max-width:100%">
+  <div id="Tetris"></div>
+</div>
 
-  <script src="./emulator.js"></script>
+<script>
+  EJS_player = "#Tetris";
+  EJS_core = "gb";
+  EJS_gameName = "Tetris";
+  EJS_gameUrl = "./../rom/tetris.gb";
+  EJS_pathtodata = "./../EmulatorJS-4.2.3/data/";
+</script>
 
-  <script src="./../EmulatorJS-4.2.3/data/loader.js"></script>
+<script>
+(() => {
+  const orig = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function(type, attrs) {
+    if (type === "webgl" || type === "webgl2") {
+      attrs = Object.assign({}, attrs, { preserveDrawingBuffer: true });
+    }
+    return orig.call(this, type, attrs);
+  };
+  console.log("[PATCH] preserveDrawingBuffer enabled");
+})();
+</script>
+
+<script src="./../EmulatorJS-4.2.3/data/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+(async () => {
+  const LOG = {
+    info: (...a) => console.info("%c[OCR]", "color:#4da3ff", ...a),
+    warn: (...a) => console.warn("%c[OCR]", "color:#ffb84d", ...a),
+    error: (...a) => console.error("%c[OCR]", "color:#ff4d4d", ...a),
+  };
+
+  // ✅ Anti OOM: petits scales + réutilisation + throttle
+  const POLL_MS = 1400;
+  const SCALE_TYPE  = 2;   // ↓
+  const SCALE_GRID  = 1;   // ↓
+  const SCALE_SCORE = 2;   // ↓
+
+  // Boxes fractionnelles
+  const BOX = {
+    // haut-gauche: A-TYPE / B-TYPE
+    type: { x: 0.045, y: 0.03,  w: 0.26, h: 0.14 },
+
+    // grille des chiffres 0..9
+    grid: { x: 0.215, y: 0.29,  w: 0.57, h: 0.19 },
+
+    // nombre à droite de la ligne 1 (TOP-SCORE)
+    topScoreNum: { x: 0.82, y: 0.72, w: 0.16, h: 0.10 },
+  };
+
+  // Debug UI
+  const dbg = document.createElement("div");
+  dbg.id = "ocr-debug";
+  dbg.innerHTML = `
+    <b>OCR Debug</b>
+    <div class="row" id="dbgText">waiting…</div>
+    <div class="row">TYPE crop</div><canvas id="cType"></canvas>
+    <div class="row">GRID crop</div><canvas id="cGrid"></canvas>
+    <div class="row">TOP-SCORE crop</div><canvas id="cScore"></canvas>
+  `;
+  document.body.appendChild(dbg);
+
+  const cType = document.getElementById("cType");
+  const cGrid = document.getElementById("cGrid");
+  const cScore = document.getElementById("cScore");
+
+  function pickGameCanvas() {
+    const list = [...document.querySelectorAll("canvas")]
+      .filter(c => c.width > 0 && c.height > 0)
+      .sort((a,b)=>(b.width*b.height)-(a.width*a.height));
+    return list[0] || null;
+  }
+
+  // ✅ réutilisation des canvases offscreen
+  const offType  = document.createElement("canvas");
+  const offGrid  = document.createElement("canvas");
+  const offScore = document.createElement("canvas");
+
+  function cropToOff(src, b, scale, off) {
+    const sx = Math.floor(src.width * b.x);
+    const sy = Math.floor(src.height * b.y);
+    const sw = Math.floor(src.width * b.w);
+    const sh = Math.floor(src.height * b.h);
+
+    const W = Math.max(1, sw * scale);
+    const H = Math.max(1, sh * scale);
+
+    if (off.width !== W) off.width = W;
+    if (off.height !== H) off.height = H;
+
+    const ctx = off.getContext("2d", { willReadFrequently:true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0,0,off.width,off.height);
+    ctx.drawImage(src, sx, sy, sw, sh, 0, 0, off.width, off.height);
+    return off;
+  }
+
+  function drawInto(dst, src) {
+    dst.width = src.width;
+    dst.height = src.height;
+    const ctx = dst.getContext("2d", { willReadFrequently:true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0,0,dst.width,dst.height);
+    ctx.drawImage(src, 0, 0);
+  }
+
+  // binarisation in-place
+  function bwInPlace(c, th = 160) {
+    const ctx = c.getContext("2d", { willReadFrequently:true });
+    const img = ctx.getImageData(0,0,c.width,c.height);
+    const d = img.data;
+    for (let i=0; i<d.length; i+=4) {
+      const g = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
+      const v = g > th ? 255 : 0;
+      d[i]=d[i+1]=d[i+2]=v; d[i+3]=255;
+    }
+    ctx.putImageData(img,0,0);
+  }
+
+  const norm = (t) => (t||"").toUpperCase().replace(/\s+/g," ").trim();
+
+  function parseType(raw) {
+    const s = norm(raw);
+    const m = s.match(/[AB]/);
+    return m ? m[0] : null;
+  }
+
+  function parseTopScore(raw) {
+    const nums = (raw||"").match(/\d+/g) || [];
+    if (!nums.length) return null;
+    return Math.max(...nums.map(n => parseInt(n,10)));
+  }
+
+  /**
+   * LEVEL: chiffre le plus sombre (pas la case)
+   * ✅ Anti OOM: échantillonnage léger (step)
+   */
+  function detectLevelFromGrid(gridCanvas) {
+    // copie + bw (seuil haut pour laisser chiffres gris en blanc)
+    const g = gridCanvas;
+    bwInPlace(g, 190);
+
+    const ctx = g.getContext("2d", { willReadFrequently:true });
+    const img = ctx.getImageData(0,0,g.width,g.height);
+    const data = img.data;
+
+    const cols=5, rows=2;
+    const cw=g.width/cols, ch=g.height/rows;
+
+    function ratioCell(r,c) {
+      const x0 = Math.floor(c*cw + cw*0.30);
+      const x1 = Math.floor(c*cw + cw*0.70);
+      const y0 = Math.floor(r*ch + ch*0.25);
+      const y1 = Math.floor(r*ch + ch*0.75);
+
+      let black=0, total=0;
+      const step = 4; // ✅ sample
+      for (let y=y0; y<y1; y+=step) {
+        for (let x=x0; x<x1; x+=step) {
+          const i = (y*g.width + x) * 4;
+          if (data[i] === 0) black++;
+          total++;
+        }
+      }
+      return total ? black/total : 0;
+    }
+
+    let best=-1, bestIdx=null;
+    for (let r=0;r<rows;r++){
+      for (let c=0;c<cols;c++){
+        const rr = ratioCell(r,c);
+        const idx=r*cols+c;
+        if (rr > best) { best = rr; bestIdx = idx; }
+      }
+    }
+    return best > 0.02 ? bestIdx : null;
+  }
+
+  LOG.info("Init Tesseract…");
+  const worker = await Tesseract.createWorker("eng");
+  await worker.setParameters({ preserve_interword_spaces:"1" });
+  LOG.info("Worker prêt ✅");
+
+  let busy = false;
+  let last = null;
+
+  async function tick() {
+    if (busy) return;
+    busy = true;
+
+    try {
+      const main = pickGameCanvas();
+      if (!main) return;
+
+      // crops (réutilisés)
+      const typeCrop = cropToOff(main, BOX.type, SCALE_TYPE, offType);
+      const gridCrop = cropToOff(main, BOX.grid, SCALE_GRID, offGrid);
+      const scoreCrop = cropToOff(main, BOX.topScoreNum, SCALE_SCORE, offScore);
+
+      // debug preview (léger)
+      drawInto(cType, typeCrop);
+      drawInto(cGrid, gridCrop);
+      drawInto(cScore, scoreCrop);
+
+      // TYPE
+      const typeWork = document.createElement("canvas");
+      typeWork.width = typeCrop.width; typeWork.height = typeCrop.height;
+      typeWork.getContext("2d").drawImage(typeCrop,0,0);
+      bwInPlace(typeWork, 165);
+
+      await worker.setParameters({ tessedit_char_whitelist: "ABTYPE-" });
+      const resType = await worker.recognize(typeWork.toDataURL("image/png"));
+      const rawType = resType?.data?.text ?? "";
+      const type = parseType(rawType);
+
+      // LEVEL (sur gridCrop directement — déjà petit)
+      const gridWork = document.createElement("canvas");
+      gridWork.width = gridCrop.width; gridWork.height = gridCrop.height;
+      gridWork.getContext("2d").drawImage(gridCrop,0,0);
+      const level = detectLevelFromGrid(gridWork);
+
+      // TOP SCORE
+      const scoreWork = document.createElement("canvas");
+      scoreWork.width = scoreCrop.width; scoreWork.height = scoreCrop.height;
+      scoreWork.getContext("2d").drawImage(scoreCrop,0,0);
+      bwInPlace(scoreWork, 150);
+
+      await worker.setParameters({ tessedit_char_whitelist: "0123456789" });
+      const resScore = await worker.recognize(scoreWork.toDataURL("image/png"));
+      const rawScore = resScore?.data?.text ?? "";
+      const topScore = parseTopScore(rawScore);
+
+      const payload = {
+        type,
+        level,
+        topScore,
+        confType: resType?.data?.confidence ?? null,
+        confScore: resScore?.data?.confidence ?? null
+      };
+
+      document.getElementById("dbgText").textContent =
+        `type=${type} level=${level} topScore=${topScore} | confType=${payload.confType} confScore=${payload.confScore}`;
+
+      const changed = !last || payload.type!==last.type || payload.level!==last.level || payload.topScore!==last.topScore;
+      if (changed) {
+        LOG.info("TYPE raw:", JSON.stringify(rawType), "=>", type, "conf:", payload.confType);
+        LOG.info("SCORE raw:", JSON.stringify(rawScore), "=>", topScore, "conf:", payload.confScore);
+        LOG.info("PAYLOAD ✅", payload);
+        last = payload;
+      } else {
+        LOG.info("TETRIS OCR →", payload);
+      }
+
+    } catch (e) {
+      LOG.error("tick error:", e);
+    } finally {
+      busy = false;
+    }
+  }
+
+  setInterval(tick, POLL_MS);
+})();
+</script>
 </body>
 </html>
