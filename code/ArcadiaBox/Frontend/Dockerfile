@@ -5,7 +5,7 @@ FROM nginx:latest
 WORKDIR /usr/share/nginx/html
 
 # Copy the build files from the host to the container
-COPY ./dist /usr/share/nginx/html
+COPY . /usr/share/nginx/html
 
 # Copy the custom Nginx configuration file
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
