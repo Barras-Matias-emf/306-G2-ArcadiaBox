@@ -1,18 +1,18 @@
 const Joi = require('joi');
 
-
-const motoSchema = Joi.object({
-    nomClient: Joi.string().trim().min(1).required(),
-    pk_configurationMoto: Joi.number().required(),
-    dateLivraison: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).required()
+// Définir le schéma de validation pour les scores
+const scoreSchema = Joi.object({
+    playerName: Joi.string().trim().min(1).required(), // Nom du joueur (obligatoire, non vide)
+    score: Joi.number().integer().min(0).required(),   // Score (obligatoire, entier >= 0)
+    game: Joi.string().trim().min(1).required()        // Nom du jeu (obligatoire, non vide)
 });
 
 module.exports = (req, res, next) => {
-    const { error } = motoSchema.validate(req.body);
+    const { error } = scoreSchema.validate(req.body); // Valider les données du corps de la requête
     if (error) {
         return res.status(400).json({
-            error: error.details[0].message
+            error: error.details[0].message // Retourner un message d'erreur si la validation échoue
         });
     }
-    next();
+    next(); // Passer au middleware suivant si la validation réussit
 };

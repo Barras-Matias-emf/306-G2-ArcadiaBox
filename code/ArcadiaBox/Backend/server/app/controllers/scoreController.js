@@ -10,9 +10,21 @@ const getAllScores = async (req, res) => {
     }
 };
 
+const addScore = async (req, res) => {
+    try {
+        const { playerName, score, game } = req.body;
+        const newScore = await scoreService.addScore(playerName, score, game);
+        console.log(newScore);
+        res.status(201).json(newScore);
+    } catch (error) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+};
+
 
 
 
 module.exports = {
-    getAllScores
+    getAllScores,
+    addScore,
 };
