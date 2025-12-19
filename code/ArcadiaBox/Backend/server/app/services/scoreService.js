@@ -9,10 +9,9 @@ const getAllScores = async () => {
       SELECT 
         s.pk_score,
         s.score,
-        p.pseudo AS player,
+        s.pseudo,
         g.name AS game
       FROM t_scores s
-      JOIN t_player p ON s.fk_player = p.pk_player
       JOIN t_games g ON s.fk_game = g.pk_game
       ORDER BY g.name, s.score DESC
     `);
@@ -26,20 +25,11 @@ const getAllScores = async () => {
   }
 };
 
-const addScore = async (playerName, score, game) => {
+const addScore = async (pseudo, score, game) => {
   let connection;
   try {
     connection = await pool.getConnection();
     await connection.beginTransaction();
-
-    let pk_player;
-    //le créer
-    const [insertPlayerResult] = await connection.query(
-      "INSERT INTO t_player (pseudo) VALUES (?)",
-      [playerName]
-    );
-    pk_player = insertPlayerResult.insertId; // Récupérer l'identifiant du joueur créé
-    // Vérifier si le jeu existe
     const [gameRows] = await connection.query(
       "SELECT pk_game FROM t_games WHERE name = ?",
       [game]
@@ -50,8 +40,8 @@ const addScore = async (playerName, score, game) => {
     const pk_game = gameRows[0].pk_game;
     // Insérer le score dans la table t_scores
     const [rows] = await connection.query(
-      "INSERT INTO t_scores (score, fk_player, fk_game) VALUES (?, ?, ?)",
-      [score, pk_player, pk_game]
+      "INSERT INTO t_scores (score, pseudo, fk_game) VALUES (?, ?, ?)",
+      [score, pseudo, pk_game]
     );
     await connection.commit();
     return rows;

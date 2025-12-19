@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 // Définir le schéma de validation pour les scores
 const scoreSchema = Joi.object({
-    playerName: Joi.string().trim().min(1).required(), // Nom du joueur (obligatoire, non vide)
+    pseudo: Joi.string().trim().min(1).required(), // Nom du joueur (obligatoire, non vide)
     score: Joi.number().integer().min(0).required(),   // Score (obligatoire, entier >= 0)
     game: Joi.string().trim().min(1).required()        // Nom du jeu (obligatoire, non vide)
 });
