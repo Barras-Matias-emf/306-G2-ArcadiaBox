@@ -28,5 +28,6 @@ CREATE TABLE t_scores (
 INSERT INTO t_games (name) VALUES
 ('Space Invaders'),
 ('Pac-Man'),
+('Super-Mario-Bros'),
 ('Tetris');
 

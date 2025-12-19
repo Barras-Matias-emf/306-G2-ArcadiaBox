@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario Bros - Live Score Tracker</title>
+    <link rel="stylesheet" href="../styles/mario.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍄 SUPER MARIO BROS 🍄</h1>
+            <!-- Score en haut à droite du header -->
+            <div class="score-compact">
+                <span class="score-label">SCORE:</span>
+                <span id="live-score" class="score-value">000000</span>
+            </div>
+        </header>
+
+        <!-- Zone de jeu prend tout l'espace disponible -->
+        <div class="game-section">
+            <div id="game-container" class="game-canvas">
+                <div class="loading">Loading ROM...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input caché pour charger la ROM si nécessaire -->
+    <input type="file" id="rom-loader" accept=".nes" style="display: none;">
+
+    <script type="module" src="../controllers/MarioGameController.js"></script>
+</body>
+</html>
