@@ -1,5 +1,9 @@
 const pool = require("../../config/database.js");
 
+/**
+ * Récupère tous les scores depuis la base de données.
+ * @returns {Promise<Array>} Liste des scores.
+ */
 const getAllScores = async () => {
   let connection;
   try {
@@ -25,6 +29,13 @@ const getAllScores = async () => {
   }
 };
 
+/**
+ * Ajoute un nouveau score dans la base de données.
+ * @param {string} pseudo - Nom du joueur.
+ * @param {number} score - Score obtenu.
+ * @param {string} game - Nom du jeu.
+ * @returns {Promise<Object>} Résultat de l'insertion.
+ */
 const addScore = async (pseudo, score, game) => {
   let connection;
   try {
