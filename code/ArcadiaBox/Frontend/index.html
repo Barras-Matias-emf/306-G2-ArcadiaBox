@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Arcade Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+
+<body>
+
+  <!-- DÉCORATIONS -->
+  <div class="decor">
+
+    <!-- LoL HUD -->
+    <div class="lol-hud" aria-hidden="true">
+      <div class="lol-label">SUMMONER HUD</div>
+      <div class="champ-portrait"></div>
+      <div class="bars">
+        <div class="bar hp"><span></span></div>
+        <div class="bar mana"><span></span></div>
+      </div>
+      <div class="lol-right">
+        <div class="rune"></div>
+        <div class="mini-map"></div>
+      </div>
+    </div>
+
+    <!-- PAC-MAN -->
+    <div class="pacman-zone" aria-hidden="true">
+      <div class="pacman">ᗧ•••</div>
+      <div class="ghost red">ᗣ</div>
+      <div class="ghost blue">ᗣ</div>
+    </div>
+
+    <!-- MARIO (repositionné) -->
+    <div class="mario" aria-hidden="true">
+      🍄 ★ 1-UP
+    </div>
+
+    <!-- TETRIS -->
+    <div class="tetris" aria-hidden="true">
+      <div class="piece p1">
+        <div class="tet t1"></div><div class="tet t2"></div><div class="tet t3"></div><div class="tet t4"></div>
+      </div>
+      <div class="piece p2">
+        <div class="tet t1"></div><div class="tet t2"></div><div class="tet t3"></div><div class="tet t4"></div>
+      </div>
+      <div class="piece p3">
+        <div class="tet t1"></div><div class="tet t2"></div><div class="tet t3"></div><div class="tet t4"></div>
+      </div>
+      <div class="piece p4">
+        <div class="tet t1"></div><div class="tet t2"></div><div class="tet t3"></div><div class="tet t4"></div>
+      </div>
+    </div>
+
+    <!-- ZELDA -->
+    <div class="zelda" aria-hidden="true">
+      <div class="triforce">
+        <div class="tri t1"></div>
+        <div class="tri t2"></div>
+        <div class="tri t3"></div>
+      </div>
+      <div class="quote">IT'S DANGEROUS<br>TO GO ALONE</div>
+    </div>
+
+    <!-- DARK SOULS -->
+    <div class="ds" aria-hidden="true">
+      <div class="bonfire">
+        <div class="flame"></div>
+        <div class="log"></div>
+      </div>
+      <div class="ds-text">
+        REST AT BONFIRE
+        <span class="you-died">YOU DIED</span>
+      </div>
+      <div class="estus"></div>
+    </div>
+
+  </div>
+
+  <!-- MENU -->
+  <main class="cabinet">
+    <h1>ARCADE MENU</h1>
+    <p class="subtitle">A / D ou ← / → — Entrée pour jouer</p>
+
+    <section class="menu">
+      <a class="btn" href="jeu1.html">Jeu 1<small>Space Runner</small></a>
+      <a class="btn" href="jeu2.html">Jeu 2<small>Neon Snake</small></a>
+      <a class="btn" href="jeu3.html">Jeu 3<small>Pixel Shooter</small></a>
+    </section>
+  </main>
+
+  <script src="./assets/menu.js" defer></script>
+</body>
+</html>
