@@ -161,21 +161,21 @@ async function initMario() {
             }
         }, 1000);
         
-        // 8. Initialiser le scanner
-        console.log('🔧 [INIT] Initialisation du scanner...');
-        await controller.initScanner();
-        console.log('✅ [INIT] Scanner initialisé');
+        // 8. DÉSACTIVÉ TEMPORAIREMENT - Le scanner de mémoire ne fonctionne pas avec Nostalgist
+        console.warn('⚠️ [INIT] Scanner de mémoire désactivé (incompatible avec Nostalgist/RetroArch)');
+        console.warn('⚠️ [INIT] Le tracking du score nécessite une approche différente (OCR ou hooks)');
         
-        // 9. Démarrer le monitoring
-        console.log('📊 [INIT] Démarrage du monitoring...');
-        controller.startMonitoring(500);
-        console.log('✅ [INIT] Monitoring démarré');
+        // Si vous voulez quand même essayer (ça va timeout) :
+        // await controller.initScanner();
+        // controller.startMonitoring(500);
         
-        // 10. Exposer le contrôleur globalement
+        // 9. Exposer le contrôleur globalement
         window.MARIO_CONTROLLER = controller;
         console.log('🌍 [INIT] Contrôleur exposé globalement: window.MARIO_CONTROLLER');
         
         console.log('🎉 [INIT] === INITIALISATION TERMINÉE AVEC SUCCÈS ===');
+        console.log('🎮 [INIT] Le jeu est jouable mais le score n\'est pas tracké');
+        console.log('💡 [INIT] Pour tracker le score, il faudra implémenter l\'OCR ou utiliser un autre émulateur');
         
     } catch (error) {
         console.error('❌ [INIT] ERREUR LORS DE L\'INITIALISATION:', error);

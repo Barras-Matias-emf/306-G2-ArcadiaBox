@@ -11,44 +11,33 @@
         <h1>🍄 SUPER MARIO BROS 🍄</h1>
         
         <div id="score-display">
-            <span class="score-label">SCORE:</span>
-            <span id="live-score" class="score-value">000000</span>
+            <span class="score-label">SESSION:</span>
+            <span id="live-score" class="score-value"><span id="session-id">--</span></span>
         </div>
         
         <div id="emulator-container"></div>
         
         <div id="controls">
-            <button onclick="window.MARIO_CONTROLLER?.stop()">⏸️ Pause</button>
-            <button onclick="window.MARIO_CONTROLLER?.startMonitoring(500)">▶️ Resume</button>
             <button onclick="window.location.href='../index.html'">🏠 Menu</button>
-        </div>
-        
-        <div id="debug-info">
-            <details>
-                <summary>🔍 Debug Info</summary>
-                <div class="debug-content">
-                    <p>Session: <span id="session-id">--</span></p>
-                    <p>Temps: <span id="play-time">00:00</span></p>
-                    <table class="memory-table">
-                        <thead>
-                            <tr>
-                                <th>Adresse</th>
-                                <th>Hex</th>
-                                <th>Déc</th>
-                            </tr>
-                        </thead>
-                        <tbody id="debug-table">
-                            <tr>
-                                <td colspan="3">En attente...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </details>
         </div>
         
         <div id="game-instructions">
             ⌨️ Touches : ← → ↑ ↓ | Z = A | X = B | Enter = Start | Shift = Select
+            <br>
+            ⚠️ Le tracking automatique du score n'est pas encore implémenté
+        </div>
+        
+        <div id="debug-info" style="display:none;">
+            <details>
+                <summary>🔍 Info Technique</summary>
+                <div class="debug-content">
+                    <p>Temps: <span id="play-time">00:00</span></p>
+                    <p style="color: #ff9800;">
+                        ⚠️ L'accès direct à la mémoire n'est pas possible avec Nostalgist.<br>
+                        Pour tracker le score, il faudra utiliser OCR (reconnaissance optique) ou un autre émulateur.
+                    </p>
+                </div>
+            </details>
         </div>
     </div>
 
