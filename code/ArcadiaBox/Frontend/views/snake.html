@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="../css/snake.css">
+</head>
+<body>
+    <div class="top-bar" role="navigation" aria-label="barre supérieure">
+        <button class="btn" id="home-btn" type="button">Accueil</button>
+        <button class="btn" id="scores-btn" type="button">Tableau des scores</button>
+    </div>
+
+    <h1 class="title">Nom du jeu</h1>
+
+    <div class="console" role="region" aria-label="console rétro">
+        <div class="screen">
+            <!-- canvas a taille fixe 300x300 pour rester dans la "console" -->
+            <canvas id="game-canvas" width="300" height="300"></canvas>
+
+            <!-- overlay UI DANS LE FRAME (Play / Restart) -->
+            <div class="screen-ui" aria-hidden="false">
+                <button class="btn" id="play-btn" type="button">Play</button>
+                <button class="btn" id="restart-btn" type="button">Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- bouton externe restant pour envoi score -->
+    <button class="btn" id="send-score-btn" type="button">Envoyer le score</button>
+
+    <section class="how-to-play" aria-labelledby="howto-title">
+        <h2 id="howto-title">Comment jouer</h2>
+        <p>Utilisez les flèches directionnelles pour déplacer le serpent. Mangez la nourriture pour gagner des points. Évitez les murs et votre propre corps. Le jeu se termine si vous touchez un obstacle.</p>
+    </section>
+
+    <!-- Chargement des modules JS -->
+    <script type="module" src="../js/controllers/snakeController.js"></script>
+    <script type="module" src="../js/services/snakeService.js"></script>
+</body>
+</html>

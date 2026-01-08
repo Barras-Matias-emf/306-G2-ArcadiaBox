@@ -1,0 +1,128 @@
+* { box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #24303f;
+}
+
+/* Top bar */
+.top-bar {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    margin-bottom: 18px;
+}
+
+.btn {
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn:hover { box-shadow: 0 8px 18px rgba(108,99,255,0.18); }
+
+.title {
+    text-align: center;
+    font-size: 48px;
+    margin: 4px 0 18px;
+    font-weight: 600;
+    color: #2f3b47;
+}
+
+/* Console rétro */
+.console {
+    background: linear-gradient(#d9b78f, #c99f74);
+    border-radius: 12px;
+    padding: 18px;
+    border: 6px solid #9a1515;
+    max-width: 760px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* Ecran (screen) */
+.screen {
+    position: relative; /* important pour overlay */
+    width: 300px;
+    height: 300px;
+    background: #000;
+    border-radius: 6px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.7);
+    overflow: hidden;
+}
+
+/* canvas */
+#game-canvas {
+    width: 300px;
+    height: 300px;
+    display: block;
+    image-rendering: pixelated;
+}
+
+/* UI DANS L'ÉCRAN (overlay) */
+.screen-ui {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0,0,0,0.4); /* overlay subtle */
+    pointer-events: auto;
+}
+
+/* Cacher l'overlay facilement */
+.screen-ui.hidden {
+    display: none;
+}
+
+/* boutons overlay */
+.screen-ui .btn {
+    min-width: 140px;
+    padding: 10px 18px;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+/* send-score outside */
+#send-score-btn {
+    margin: 12px 0;
+}
+
+/* How to play */
+.how-to-play {
+    text-align: center;
+    margin-top: 18px;
+    max-width: 720px;
+    background: #fff;
+    padding: 14px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+}
+
+/* responsive */
+@media (max-width: 640px) {
+    .title { font-size: 28px; }
+    .screen { width: 250px; height: 250px; }
+    #game-canvas { width: 250px; height: 250px; }
+    .screen-ui .btn { min-width: 120px; font-size: 16px; }
+}
