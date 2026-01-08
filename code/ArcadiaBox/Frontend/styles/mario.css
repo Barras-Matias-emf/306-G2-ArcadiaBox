@@ -19,35 +19,30 @@ body {
     background: linear-gradient(135deg, var(--bg-primary) 0%, #1a0033 100%);
     color: var(--text-primary);
     min-height: 100vh;
-    overflow-x: hidden;
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
 }
 
-header {
+#game-container {
+    max-width: 900px;
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 3px solid var(--accent-blue);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 30px var(--border-glow);
     text-align: center;
-    padding: 30px 0;
-    border-bottom: 2px solid var(--accent-blue);
-    margin-bottom: 30px;
-    text-shadow: 0 0 10px var(--accent-blue);
 }
 
-header h1 {
-    font-size: 3rem;
+h1 {
+    font-size: 2.5rem;
     color: var(--accent-blue);
     letter-spacing: 5px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px var(--accent-blue);
     animation: glow 2s ease-in-out infinite alternate;
-}
-
-.subtitle {
-    color: var(--accent-pink);
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-transform: uppercase;
 }
 
 @keyframes glow {
@@ -55,42 +50,62 @@ header h1 {
     to { text-shadow: 0 0 20px var(--accent-blue), 0 0 30px var(--accent-pink); }
 }
 
-.main-content {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 30px;
+#score-display {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a0f2e 100%);
+    border: 2px solid var(--accent-green);
+    border-radius: 10px;
+    padding: 15px 30px;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
-/* Zone de jeu */
-.game-section {
-    background: var(--bg-secondary);
-    border: 3px solid var(--accent-blue);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 0 30px var(--border-glow);
+.score-label {
+    color: var(--accent-pink);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-right: 10px;
 }
 
-#game-container {
+.score-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    text-shadow: 0 0 15px var(--accent-green);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 5px;
+}
+
+#emulator-container {
     width: 100%;
     aspect-ratio: 4 / 3;
+    max-height: 600px;
     background: #000;
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
-    max-height: 600px;
+    position: relative;
 }
 
-#game-container canvas {
-    max-width: 100% !important;
-    max-height: 100% !important;
+/* Style spécifique pour le canvas NES */
+#emulator-container canvas,
+#emulator-container .nes-canvas {
+    position: static !important;
     width: 100% !important;
     height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
     object-fit: contain !important;
-    position: relative !important;
+    display: block !important;
+    margin: 0 auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
 }
 
 .loading {
@@ -104,98 +119,70 @@ header h1 {
     50% { opacity: 1; }
 }
 
-.game-controls {
-    margin-top: 15px;
-    padding: 10px;
-    background: rgba(0, 217, 255, 0.1);
-    border-radius: 8px;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-/* Panneau de score */
-.score-panel {
+#controls {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.score-display {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a0f2e 100%);
-    border: 3px solid var(--accent-pink);
-    border-radius: 15px;
-    padding: 25px;
-    text-align: center;
-    box-shadow: 0 0 25px rgba(255, 0, 110, 0.3);
-}
-
-.score-display h2 {
-    font-size: 1.2rem;
-    color: var(--accent-pink);
-    margin-bottom: 15px;
-    letter-spacing: 3px;
-}
-
-.score-value {
-    font-size: 4rem;
-    font-weight: bold;
-    color: var(--accent-green);
-    text-shadow: 0 0 15px var(--accent-green);
-    font-family: 'Courier New', monospace;
-    letter-spacing: 8px;
-}
-
-.status {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
+    gap: 15px;
     justify-content: center;
-    gap: 10px;
-    font-size: 0.85rem;
+    margin-bottom: 20px;
 }
 
-.indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #555;
-    animation: blink 2s ease-in-out infinite;
-}
-
-.status.active .indicator {
-    background: var(--accent-green);
-    box-shadow: 0 0 10px var(--accent-green);
-}
-
-.status.syncing .indicator {
-    background: var(--accent-blue);
-    box-shadow: 0 0 10px var(--accent-blue);
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-}
-
-/* Debug section */
-.debug-section {
-    background: var(--bg-secondary);
-    border: 2px solid var(--accent-blue);
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.debug-section h3 {
+#controls button {
+    background: linear-gradient(135deg, var(--accent-blue), #0088cc);
+    color: white;
+    border: none;
+    padding: 12px 24px;
     font-size: 1rem;
-    color: var(--accent-blue);
+    font-family: 'Courier New', monospace;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+}
+
+#controls button:hover {
+    background: linear-gradient(135deg, #00fff0, var(--accent-blue));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+}
+
+#controls button:active {
+    transform: translateY(0);
+}
+
+#debug-info {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 10px;
     margin-bottom: 15px;
-    text-align: center;
+}
+
+#debug-info details {
+    cursor: pointer;
+}
+
+#debug-info summary {
+    color: var(--accent-blue);
+    font-weight: bold;
+    padding: 5px;
+    user-select: none;
+}
+
+.debug-content {
+    padding: 15px;
+    text-align: left;
+}
+
+.debug-content p {
+    margin: 5px 0;
+    font-size: 0.9rem;
 }
 
 .memory-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
+    margin-top: 10px;
 }
 
 .memory-table th {
@@ -216,35 +203,33 @@ header h1 {
     background: rgba(0, 217, 255, 0.1);
 }
 
-/* Session info */
-.session-info {
-    background: var(--bg-secondary);
-    border: 2px solid var(--accent-green);
-    border-radius: 12px;
-    padding: 15px;
+#game-instructions {
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
-}
-
-.session-info p {
-    margin: 5px 0;
-}
-
-.session-info span {
-    color: var(--accent-green);
-    font-weight: bold;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-    .main-content {
-        grid-template-columns: 1fr;
-    }
-    
-    header h1 {
-        font-size: 2rem;
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
     }
     
     .score-value {
-        font-size: 3rem;
+        font-size: 2rem;
+    }
+    
+    #controls {
+        flex-direction: column;
+    }
+    
+    #controls button {
+        width: 100%;
+    }
+    
+    #emulator-container {
+        max-height: 400px;
     }
 }

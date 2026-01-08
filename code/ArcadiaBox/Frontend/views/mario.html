@@ -7,27 +7,51 @@
     <link rel="stylesheet" href="../styles/mario.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🍄 SUPER MARIO BROS 🍄</h1>
-            <!-- Score en haut à droite du header -->
-            <div class="score-compact">
-                <span class="score-label">SCORE:</span>
-                <span id="live-score" class="score-value">000000</span>
-            </div>
-        </header>
-
-        <!-- Zone de jeu prend tout l'espace disponible -->
-        <div class="game-section">
-            <div id="game-container" class="game-canvas">
-                <div class="loading">Loading ROM...</div>
-            </div>
+    <div id="game-container">
+        <h1>🍄 SUPER MARIO BROS 🍄</h1>
+        
+        <div id="score-display">
+            <span class="score-label">SCORE:</span>
+            <span id="live-score" class="score-value">000000</span>
+        </div>
+        
+        <div id="emulator-container"></div>
+        
+        <div id="controls">
+            <button onclick="window.MARIO_CONTROLLER?.stop()">⏸️ Pause</button>
+            <button onclick="window.MARIO_CONTROLLER?.startMonitoring(500)">▶️ Resume</button>
+            <button onclick="window.location.href='../index.html'">🏠 Menu</button>
+        </div>
+        
+        <div id="debug-info">
+            <details>
+                <summary>🔍 Debug Info</summary>
+                <div class="debug-content">
+                    <p>Session: <span id="session-id">--</span></p>
+                    <p>Temps: <span id="play-time">00:00</span></p>
+                    <table class="memory-table">
+                        <thead>
+                            <tr>
+                                <th>Adresse</th>
+                                <th>Hex</th>
+                                <th>Déc</th>
+                            </tr>
+                        </thead>
+                        <tbody id="debug-table">
+                            <tr>
+                                <td colspan="3">En attente...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </div>
+        
+        <div id="game-instructions">
+            ⌨️ Touches : ← → ↑ ↓ | Z = A | X = B | Enter = Start | Shift = Select
         </div>
     </div>
 
-    <!-- Input caché pour charger la ROM si nécessaire -->
-    <input type="file" id="rom-loader" accept=".nes" style="display: none;">
-
-    <script type="module" src="../controllers/MarioGameController.js"></script>
+    <script type="module" src="../controllers/initMario.js"></script>
 </body>
 </html>
