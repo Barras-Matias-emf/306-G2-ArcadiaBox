@@ -161,21 +161,56 @@ async function initMario() {
             }
         }, 1000);
         
-        // 8. DÉSACTIVÉ TEMPORAIREMENT - Le scanner de mémoire ne fonctionne pas avec Nostalgist
-        console.warn('⚠️ [INIT] Scanner de mémoire désactivé (incompatible avec Nostalgist/RetroArch)');
-        console.warn('⚠️ [INIT] Le tracking du score nécessite une approche différente (OCR ou hooks)');
+        // 8. ✅ RÉACTIVÉ - Scanner de mémoire avec accès HEAPU8
+        console.log('🔧 [INIT] Initialisation du scanner de mémoire...');
         
-        // Si vous voulez quand même essayer (ça va timeout) :
-        // await controller.initScanner();
-        // controller.startMonitoring(500);
+        // Attendre que l'émulateur soit vraiment prêt (3 secondes pour RetroArch)
+        setTimeout(async () => {
+            try {
+                console.log('⏳ [INIT] Démarrage initialisation scanner (après 3s)...');
+                await controller.initScanner();
+                console.log('✅ [INIT] Scanner initialisé avec succès');
+                
+                // Démarrer le monitoring toutes les 100ms
+                controller.startMonitoring(100);
+                console.log('✅ [INIT] Monitoring du score activé (100ms)');
+                
+                // Afficher un premier score après 1 seconde
+                setTimeout(() => {
+                    const score = controller.getCurrentScore();
+                    console.log('🎯 [INIT] Premier score lu:', score);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ [INIT] Échec initialisation scanner:', error);
+                console.warn('⚠️ [INIT] Le jeu fonctionne mais le score ne sera pas tracké');
+                console.warn('💡 [INIT] Vérifiez que HEAPU8 est accessible via window.Module');
+            }
+        }, 3000); // Augmenté à 3 secondes
         
         // 9. Exposer le contrôleur globalement
         window.MARIO_CONTROLLER = controller;
         console.log('🌍 [INIT] Contrôleur exposé globalement: window.MARIO_CONTROLLER');
         
+        // ✅ Fonction helper pour définir le pseudo à l'avance (optionnel)
+        window.setMarioPseudo = (pseudo) => {
+            if (!pseudo || pseudo.trim() === '') {
+                console.error('❌ Pseudo invalide');
+                return;
+            }
+            controller.setPlayerPseudo(pseudo.trim());
+            console.log('✅ Pseudo pré-défini:', pseudo.trim());
+            alert(`✅ Pseudo enregistré : ${pseudo.trim()}\n\nCe pseudo sera utilisé automatiquement au Game Over.`);
+        };
+        
+        console.log('💡 [INIT] Commandes disponibles :');
+        console.log('   - window.setMarioPseudo("VotrePseudo") : Définir le pseudo à l\'avance');
+        console.log('   - window.MARIO_CONTROLLER.getCurrentScore() : Voir le score actuel');
+        console.log('   - window.MARIO_CONTROLLER.debugMemoryInfo() : Debug mémoire');
+        
         console.log('🎉 [INIT] === INITIALISATION TERMINÉE AVEC SUCCÈS ===');
-        console.log('🎮 [INIT] Le jeu est jouable mais le score n\'est pas tracké');
-        console.log('💡 [INIT] Pour tracker le score, il faudra implémenter l\'OCR ou utiliser un autre émulateur');
+        console.log('🎮 [INIT] Détection automatique du Game Over (0x075A == 255)');
+        console.log('💾 [INIT] Sauvegarde automatique du score via /addscore');
         
     } catch (error) {
         console.error('❌ [INIT] ERREUR LORS DE L\'INITIALISATION:', error);
