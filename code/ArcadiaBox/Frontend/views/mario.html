@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario Bros - Live Score Tracker</title>
+    <link rel="stylesheet" href="../styles/mario.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>🍄 SUPER MARIO BROS 🍄</h1>
+        
+        <div id="score-display">
+            <span class="score-label">SCORE:</span>
+            <span id="live-score" class="score-value">000000</span>
+        </div>
+        
+        <div id="emulator-container"></div>
+        
+        <div id="controls">
+            <button onclick="window.MARIO_CONTROLLER?.stop()">⏸️ Pause</button>
+            <button onclick="window.MARIO_CONTROLLER?.startMonitoring(100)">▶️ Resume</button>
+            <button onclick="window.location.href='../index.html'">🏠 Menu</button>
+            <button onclick="window.setMarioPseudo(prompt('Entrez votre pseudo:'))">👤 Pseudo</button>
+        </div>
+        
+        <div id="game-instructions">
+            ⌨️ Touches : ← → ↑ ↓ | Z = A | X = B | Enter = Start | Shift = Select
+            <br>
+            📊 Score tracké en temps réel | 💾 Sauvegarde automatique au Game Over
+        </div>
+        
+        <div id="debug-info">
+            <details>
+                <summary>🔍 Debug Info</summary>
+                <div class="debug-content">
+                    <p>Session: <span id="session-id">--</span></p>
+                    <p>Temps: <span id="play-time">00:00</span></p>
+                    <table class="memory-table">
+                        <thead>
+                            <tr>
+                                <th>Adresse</th>
+                                <th>Hex</th>
+                                <th>Déc</th>
+                            </tr>
+                        </thead>
+                        <tbody id="debug-table">
+                            <tr>
+                                <td colspan="3">En attente...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <script type="module" src="../controllers/initMario.js"></script>
+</body>
+</html>
