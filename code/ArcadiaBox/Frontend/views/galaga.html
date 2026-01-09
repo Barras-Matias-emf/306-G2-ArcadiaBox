@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="../styles/mario.css">
 </head>
 <body>
+    <!-- Top bar with corner buttons -->
+    <div class="top-bar">
+        <button class="btn btn-home" onclick="window.location.href='../index.html'">🏠 Accueil</button>
+        <button class="btn btn-scores" onclick="window.location.href='../scores.html'">🏆 Scores</button>
+    </div>
+
     <div id="game-container">
         <h1 id="game-title">🚀 GALAGA 🚀</h1>
         
@@ -18,9 +24,8 @@
         <div id="emulator-container"></div>
         
         <div id="controls">
-            <button onclick="window.GAME_CONTROLLER?.stop()">⏸️ Pause</button>
-            <button onclick="window.GAME_CONTROLLER?.startMonitoring(100)">▶️ Resume</button>
-            <button onclick="window.location.href='../index.html'">🏠 Menu</button>
+            <button class="btn" onclick="window.GAME_CONTROLLER?.stop()">⏸️ Pause</button>
+            <button class="btn" onclick="window.GAME_CONTROLLER?.startMonitoring(100)">▶️ Resume</button>
         </div>
         
         <div id="game-instructions">
