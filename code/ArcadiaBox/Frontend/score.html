@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/score.css" />
+</head>
+
+<body>
+  <!-- DÉCORATIONS -->
+  <div class="decor">
+    <!-- Reuse decorations from index.html -->
+  </div>
+
+  <!-- SCOREBOARD -->
+  <main class="scoreboard">
+    <h1>TABLEAU DES SCORES</h1>
+    <p class="subtitle">Top 10 joueurs</p>
+
+    <section class="scores" id="scores">
+      <!-- Scores will be dynamically inserted here -->
+    </section>
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+      <a class="btn" href="index.html">Retour au menu</a>
+      <a class="btn" href="jeu1.html">Retour au jeu</a>
+    </div>
+  </main>
+
+  <script type="module">
+    import { renderScores } from "./controllers/scoreController.js";
+    window.addEventListener("load", renderScores);
+  </script>
+</body>
+</html>

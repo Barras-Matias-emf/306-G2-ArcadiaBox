@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test ROM</title>
+</head>
+<body>
+    <h1>Test de chargement ROM</h1>
+    <pre id="output"></pre>
+    <script>
+        async function testROM() {
+            const output = document.getElementById('output');
+            try {
+                const response = await fetch('./roms/mario.nes');
+                const buffer = await response.arrayBuffer();
+                const data = new Uint8Array(buffer);
+                
+                output.textContent = `Taille: ${data.length} octets\n`;
+                output.textContent += `Premiers octets (hex): ${Array.from(data.slice(0, 16)).map(b => b.toString(16).padStart(2, '0')).join(' ')}\n`;
+                output.textContent += `Signature: ${String.fromCharCode(...data.slice(0, 3))}\n`;
+                output.textContent += `4e octet: 0x${data[3].toString(16)}\n`;
+            } catch (e) {
+                output.textContent = 'Erreur: ' + e.message;
+            }
+        }
+        testROM();
+    </script>
+</body>
+</html>
