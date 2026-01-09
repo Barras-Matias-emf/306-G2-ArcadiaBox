@@ -23,39 +23,10 @@
         
         <div id="emulator-container"></div>
         
-        <div id="controls">
-            <button class="btn" onclick="window.GAME_CONTROLLER?.stop()">⏸️ Pause</button>
-            <button class="btn" onclick="window.GAME_CONTROLLER?.startMonitoring(100)">▶️ Resume</button>
-        </div>
-        
         <div id="game-instructions">
             ⌨️ Touches : ← → ↑ ↓ | Z = A | X = B | Enter = Start | Shift = Select
             <br>
             📊 Score tracké en temps réel | 💾 Sauvegarde automatique au Game Over
-        </div>
-        
-        <div id="debug-info">
-            <details>
-                <summary>🔍 Debug Info</summary>
-                <div class="debug-content">
-                    <p>Session: <span id="session-id">--</span></p>
-                    <p>Temps: <span id="play-time">00:00</span></p>
-                    <table class="memory-table">
-                        <thead>
-                            <tr>
-                                <th>Adresse</th>
-                                <th>Hex</th>
-                                <th>Déc</th>
-                            </tr>
-                        </thead>
-                        <tbody id="debug-table">
-                            <tr>
-                                <td colspan="3">En attente...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </details>
         </div>
     </div>
 

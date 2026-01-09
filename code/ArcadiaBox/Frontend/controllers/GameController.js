@@ -101,9 +101,14 @@ export class GameController {
             const currentScore = gameState.score;
             const isGameOver = gameState.isGameOver;
             
+            // Pour Galaga, ne déclencher le Game Over que si le score est > 0
             if (isGameOver && !this.wasGameOver) {
-                console.log('💀 [GAME OVER] Détecté !');
-                this.handleGameOver(currentScore);
+                if (this.gameConfig.id === 'galaga' && currentScore === 0) {
+                    console.log('⚠️ [GAME OVER] Ignoré car score = 0');
+                } else {
+                    console.log('💀 [GAME OVER] Détecté !');
+                    this.handleGameOver(currentScore);
+                }
             }
             
             this.wasGameOver = isGameOver;
@@ -232,6 +237,14 @@ export class GameController {
                 `Vérifiez que le serveur backend est démarré !`
             );
         }
+    }
+
+    detectGameOver(memory) {
+        const detector = this.config.memory.gameOverDetector;
+        if (!detector) return false;
+        
+        const value = memory[detector.address];
+        return detector.condition(value);
     }
 
     stop() {
