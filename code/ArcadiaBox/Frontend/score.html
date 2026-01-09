@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Scores</title>
+  <title>Tableau des Scores</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./assets/score.css" />
 </head>
@@ -10,28 +10,36 @@
 <body>
   <!-- DÉCORATIONS -->
   <div class="decor">
-    <!-- Reuse decorations from index.html -->
+    <!-- Reuse decorations from index.html if needed -->
   </div>
 
   <!-- SCOREBOARD -->
   <main class="scoreboard">
-    <h1>TABLEAU DES SCORES</h1>
-    <p class="subtitle">Top 10 joueurs</p>
+    <h1>🏆 TABLEAU DES SCORES</h1>
+    <p class="subtitle" id="game-title">Chargement...</p>
 
     <section class="scores" id="scores">
       <!-- Scores will be dynamically inserted here -->
+      <div style="text-align: center; padding: 40px; opacity: 0.7;">
+        <p>⏳ Chargement des scores...</p>
+      </div>
     </section>
 
     <!-- BUTTONS -->
     <div class="buttons">
-      <a class="btn" href="index.html">Retour au menu</a>
-      <a class="btn" href="jeu1.html">Retour au jeu</a>
+      <a class="btn" href="test.html">🎮 Changer de jeu</a>
+      <a class="btn" href="index.html">🏠 Menu principal</a>
     </div>
   </main>
 
   <script type="module">
-    import { renderScores } from "./controllers/scoreController.js";
-    window.addEventListener("load", renderScores);
+    import { initScoreTable } from './controllers/ScoreTableController.js';
+    
+    // Initialiser au chargement de la page
+    window.addEventListener('load', () => {
+      console.log('📄 [PAGE] score.html chargée');
+      initScoreTable();
+    });
   </script>
 </body>
 </html>
