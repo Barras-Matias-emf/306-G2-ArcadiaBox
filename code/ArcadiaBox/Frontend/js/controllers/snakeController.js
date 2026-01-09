@@ -23,6 +23,108 @@ document.addEventListener('DOMContentLoaded', () => {
     const TICK_MS = 110;
     let rafId = null;
 
+    // --- Gamepad (Xbox) support ---
+    let gpIndex = null;
+    let gpPollRaf = null;
+    const AXIS_THRESHOLD = 0.6; // deadzone for stick
+    let prevButtons = [];
+    let prevAxisDir = { x: 0, y: 0 };
+
+    function startGpPoll() {
+        if (gpPollRaf) return;
+        function gpLoop() {
+            pollGamepad();
+            gpPollRaf = requestAnimationFrame(gpLoop);
+        }
+        gpPollRaf = requestAnimationFrame(gpLoop);
+    }
+
+    function stopGpPoll() {
+        if (gpPollRaf) {
+            cancelAnimationFrame(gpPollRaf);
+            gpPollRaf = null;
+        }
+        prevButtons = [];
+        prevAxisDir = { x: 0, y: 0 };
+    }
+
+    window.addEventListener('gamepadconnected', (e) => {
+        if (gpIndex === null) gpIndex = e.gamepad.index;
+        startGpPoll();
+        console.log('Gamepad connected:', e.gamepad.id);
+    });
+    window.addEventListener('gamepaddisconnected', (e) => {
+        if (gpIndex === e.gamepad.index) gpIndex = null;
+        stopGpPoll();
+        console.log('Gamepad disconnected:', e.gamepad.id);
+    });
+
+    function pollGamepad() {
+        const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+        // try to default to first connected if none selected
+        if (gpIndex === null) {
+            for (let i = 0; i < gps.length; i++) {
+                if (gps[i]) { gpIndex = i; break; }
+            }
+        }
+        const gp = gpIndex !== null ? gps[gpIndex] : null;
+        if (!gp) return;
+
+        // Buttons: A=0, D-pad 12..15
+        const buttons = gp.buttons.map(b => !!(b && b.pressed));
+
+        // A pressed (edge)
+        if (buttons[0] && !prevButtons[0]) {
+            if (state === 'HOME') onPlayClick();
+            else if (state === 'GAME_OVER') onRestartClick();
+        }
+
+        // Direction: D-pad takes priority
+        let input = null;
+        if (buttons[12]) input = { x: 0, y: -1 }; // up
+        else if (buttons[13]) input = { x: 0, y: 1 }; // down
+        else if (buttons[14]) input = { x: -1, y: 0 }; // left
+        else if (buttons[15]) input = { x: 1, y: 0 }; // right
+        else {
+            // Left stick axes
+            const ax = gp.axes && gp.axes.length >= 2 ? gp.axes[0] : 0;
+            const ay = gp.axes && gp.axes.length >= 2 ? gp.axes[1] : 0;
+            if (Math.abs(ax) > AXIS_THRESHOLD) {
+                input = ax < 0 ? { x: -1, y: 0 } : { x: 1, y: 0 };
+            } else if (Math.abs(ay) > AXIS_THRESHOLD) {
+                input = ay < 0 ? { x: 0, y: -1 } : { x: 0, y: 1 };
+            }
+            // prevent jitter repeating same axis direction
+            if (input && input.x === prevAxisDir.x && input.y === prevAxisDir.y) {
+                input = null;
+            } else if (input) {
+                prevAxisDir = input;
+            } else {
+                prevAxisDir = { x: 0, y: 0 };
+            }
+        }
+
+        if (input) {
+            if (state === 'HOME') {
+                onPlayClick();
+                // start immediately
+                startPlaying(input);
+            } else if (state === 'READY') {
+                startPlaying(input);
+            } else if (state === 'PLAYING') {
+                game.setDirection(input);
+            }
+        }
+
+        // save buttons state
+        prevButtons = buttons;
+    }
+    // Try start poll if a gamepad already connected on load
+    const existing = navigator.getGamepads ? navigator.getGamepads() : [];
+    for (let i = 0; i < existing.length; i++) {
+        if (existing[i]) { gpIndex = i; startGpPoll(); break; }
+    }
+
     // 🔥 ICI on fait un canvas VRAIMENT GRAND
     function resizeCanvasAndGrid() {
         const viewportWidth = window.innerWidth;
@@ -149,7 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function loop(time) {
         rafId = null;
         if (state !== 'PLAYING') return;
-
+        // call pollGamepad here too to ensure input even if no gpPollRaf
+        pollGamepad();
         if (!lastTime) lastTime = time;
         if (time - lastTime >= TICK_MS) {
             game.update();
