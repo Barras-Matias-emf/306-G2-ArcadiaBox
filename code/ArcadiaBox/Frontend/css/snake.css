@@ -1,128 +1,134 @@
 * { box-sizing: border-box; }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f7f8fb 0%, #eef1f4 100%);
     margin: 0;
-    padding: 16px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
     color: #24303f;
+    min-height: 100vh;
 }
 
 /* Top bar */
 .top-bar {
     width: 100%;
-    max-width: 980px;
+    max-width: 1100px;
     display: flex;
     justify-content: space-between;
-    padding: 10px 14px;
+    padding: 12px 16px;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    margin-bottom: 18px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
 }
 
 .btn {
-    background-color: #6c63ff;
+    background: linear-gradient(145deg, #6c63ff 0%, #5a54e6 100%);
     color: #fff;
     border: none;
     padding: 8px 14px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 15px;
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
-.btn:active { transform: translateY(1px); }
-.btn:hover { box-shadow: 0 8px 18px rgba(108,99,255,0.18); }
-
-.title {
-    text-align: center;
-    font-size: 48px;
-    margin: 4px 0 18px;
     font-weight: 600;
-    color: #2f3b47;
+    box-shadow: 0 4px 12px rgba(108,99,255,0.12);
 }
 
-/* Console rétro */
+.btn:hover { transform: translateY(-2px); }
+
+/* Title */
+.title {
+    font-size: 44px;
+    margin: 8px 0 18px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Console wrapper: decoration soft and not intrusive */
 .console {
-    background: linear-gradient(#d9b78f, #c99f74);
-    border-radius: 12px;
-    padding: 18px;
-    border: 6px solid #9a1515;
-    max-width: 760px;
-    width: 100%;
+    background: linear-gradient(145deg, #efe0c8 0%, #e8d2a6 100%);
+    border-radius: 10px;
+    padding: 8px;
+    border: 1px solid rgba(154,21,21,0.18);
+    width: 50%;
+    height: 30%;
     display: flex;
     justify-content: center;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
 }
 
-/* Ecran (screen) */
+/* Screen: size is flexible, controlled by JS; default fallback */
 .screen {
-    position: relative; /* important pour overlay */
-    width: 300px;
-    height: 300px;
+    position: relative;
     background: #000;
-    border-radius: 6px;
-    box-shadow: inset 0 0 40px rgba(0,0,0,0.7);
+    border-radius: 8px;
+    box-shadow: inset 0 0 16px rgba(0,0,0,0.5);
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-/* canvas */
+/* Canvas: will be sized by JS to be pixel-perfect */
 #game-canvas {
-    width: 300px;
-    height: 300px;
     display: block;
+    background: #000;
     image-rendering: pixelated;
 }
 
-/* UI DANS L'ÉCRAN (overlay) */
+/* Overlay UI (buttons inside frame) - positioned at bottom and compact */
 .screen-ui {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    bottom: 10px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
     gap: 12px;
-    background: rgba(0,0,0,0.4); /* overlay subtle */
     pointer-events: auto;
+    padding: 6px;
+    background: transparent;
 }
 
-/* Cacher l'overlay facilement */
 .screen-ui.hidden {
     display: none;
 }
 
-/* boutons overlay */
 .screen-ui .btn {
-    min-width: 140px;
-    padding: 10px 18px;
-    font-size: 18px;
+    min-width: 110px;
+    padding: 8px 12px;
+    font-size: 15px;
     border-radius: 8px;
 }
 
 /* send-score outside */
 #send-score-btn {
-    margin: 12px 0;
+    margin: 14px 0;
 }
 
-/* How to play */
+/* How to play card */
 .how-to-play {
-    text-align: center;
-    margin-top: 18px;
+    margin-top: 20px;
     max-width: 720px;
     background: #fff;
     padding: 14px;
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    border: 1px solid #eaeaea;
+    text-align: center;
 }
 
-/* responsive */
-@media (max-width: 640px) {
-    .title { font-size: 28px; }
-    .screen { width: 250px; height: 250px; }
-    #game-canvas { width: 250px; height: 250px; }
-    .screen-ui .btn { min-width: 120px; font-size: 16px; }
+/* responsive adjustments */
+@media (max-width: 840px) {
+    .title { font-size: 34px; }
+    .screen { width: 320px; height: 350px; }
+    #game-canvas { margin-top: 6px; }
+}
+@media (max-width: 480px) {
+    .title { font-size: 26px; }
+    .screen { width: 300px; height: 340px; }
+    .screen-ui .btn { min-width: 86px; font-size: 13px; padding: 6px 10px; }
 }

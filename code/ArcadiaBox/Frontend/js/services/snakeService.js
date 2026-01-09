@@ -79,6 +79,6 @@ export class SnakeGame {
  * sendScore: placeholder pour envoyer le score à une API.
  */
 export async function sendScore(score) {
-    console.log('Envoi du score (placeholder):', score);
+    console.log('Envoi du score (placeholder):', { score, ts: Date.now() });
     return new Promise((resolve) => setTimeout(() => resolve({ ok: true }), 300));
 }
