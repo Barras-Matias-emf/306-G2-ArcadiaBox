@@ -65,6 +65,34 @@ const scoreService = require('../services/scoreService');
  *         description: Erreur serveur.
  */
 
+/**
+ * @swagger
+ * /score/top/{game}:
+ *   get:
+ *     tags: [Scores]
+ *     summary: Récupère les 10 meilleurs scores pour un jeu spécifique.
+ *     parameters:
+ *       - in: path
+ *         name: game
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Nom du jeu (Mario, Snake, Tetris).
+ *         example: Mario
+ *     responses:
+ *       200:
+ *         description: Liste des 10 meilleurs scores pour le jeu.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Score'
+ *       404:
+ *         description: Aucun score trouvé pour ce jeu.
+ *       500:
+ *         description: Erreur serveur.
+ */
 const getAllScores = async (req, res) => {
     try {
         const scores = await scoreService.getAllScores();
@@ -85,7 +113,26 @@ const addScore = async (req, res) => {
     }
 };
 
+const getTopScoresByGame = async (req, res) => {
+    try {
+        const { game } = req.params;
+        const scores = await scoreService.getTopScoresByGame(game);
+        
+        if (scores.length === 0) {
+            return res.status(404).json({ 
+                message: `Aucun score trouvé pour le jeu "${game}".` 
+            });
+        }
+        
+        res.json(scores);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des top scores:', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+};
+
 module.exports = {
     getAllScores,
     addScore,
+    getTopScoresByGame,
 };

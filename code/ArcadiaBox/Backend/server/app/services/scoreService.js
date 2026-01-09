@@ -65,7 +65,43 @@ const addScore = async (pseudo, score, game) => {
   }
 };
 
+/**
+ * Récupère les 10 meilleurs scores pour un jeu spécifique.
+ * @param {string} game - Nom du jeu.
+ * @returns {Promise<Array>} Liste des 10 meilleurs scores.
+ */
+const getTopScoresByGame = async (game) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+
+    const [rows] = await connection.query(
+      `
+      SELECT 
+        s.pk_score,
+        s.score,
+        s.pseudo,
+        g.name AS game
+      FROM t_scores s
+      JOIN t_games g ON s.fk_game = g.pk_game
+      WHERE g.name = ?
+      ORDER BY s.score DESC
+      LIMIT 10
+      `,
+      [game]
+    );
+
+    return rows;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des top scores par jeu :", error);
+    throw error;
+  } finally {
+    if (connection) connection.release();
+  }
+};
+
 module.exports = {
   getAllScores,
   addScore,
+  getTopScoresByGame,
 };
