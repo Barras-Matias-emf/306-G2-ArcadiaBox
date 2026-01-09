@@ -115,12 +115,16 @@ const addScore = async (req, res) => {
 
 const getTopScoresByGame = async (req, res) => {
     try {
-        const { game } = req.params;
-        const scores = await scoreService.getTopScoresByGame(game);
+        // ✅ Décoder le paramètre pour gérer les espaces et caractères spéciaux
+        const gameName = decodeURIComponent(req.params.game);
+        
+        console.log('🎮 [API] Recherche scores pour:', gameName);
+        
+        const scores = await scoreService.getTopScoresByGame(gameName);
         
         if (scores.length === 0) {
             return res.status(404).json({ 
-                message: `Aucun score trouvé pour le jeu "${game}".` 
+                message: `Aucun score trouvé pour le jeu "${gameName}".` 
             });
         }
         

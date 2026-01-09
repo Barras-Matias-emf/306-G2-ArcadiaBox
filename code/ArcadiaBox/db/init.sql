@@ -26,7 +26,7 @@ CREATE TABLE t_scores (
 
 -- Jeux
 INSERT INTO t_games (name) VALUES
-('Pac-Man'),
+('Snake'),
 ('Super Mario Bros'),
-('Tetris');
+('Galaga');
 

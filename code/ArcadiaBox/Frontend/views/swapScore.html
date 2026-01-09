@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sélection de jeu - Scores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../assets/score.css" />
+</head>
+
+<body>
+  <main class="scoreboard">
+    <h1>🎮 SÉLECTION DE JEU</h1>
+    <p class="subtitle">Choisissez un jeu pour voir les meilleurs scores</p>
+
+    <div class="buttons" style="flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto;">
+      <a class="btn" href="score.html?game=Super Mario Bros" style="font-size: 1.2rem;">
+        🍄 Super Mario Bros
+        <small style="display: block; margin-top: 8px; opacity: 0.8;">Top 10 meilleurs scores</small>
+      </a>
+      
+      <a class="btn" href="score.html?game=Snake" style="font-size: 1.2rem;">
+        👻 Snake
+        <small style="display: block; margin-top: 8px; opacity: 0.8;">Top 10 meilleurs scores</small>
+      </a>
+      
+      <a class="btn" href="score.html?game=Tetris" style="font-size: 1.2rem;">
+        🎮 Tetris
+        <small style="display: block; margin-top: 8px; opacity: 0.8;">Top 10 meilleurs scores</small>
+      </a>
+    </div>
+
+    <div class="buttons" style="margin-top: 30px;">
+      <a class="btn" onclick="window.location.href='../index.html'">🏠 Retour au menu principal</a>
+    </div>
+  </main>
+</body>
+</html>
