@@ -1,0 +1,235 @@
+:root {
+    --bg-primary: #0a0e27;
+    --bg-secondary: #151b3d;
+    --accent-blue: #00d9ff;
+    --accent-pink: #ff006e;
+    --accent-green: #00ff88;
+    --text-primary: #e0e0ff;
+    --border-glow: rgba(0, 217, 255, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a0033 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#game-container {
+    max-width: 900px;
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 3px solid var(--accent-blue);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 30px var(--border-glow);
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--accent-blue);
+    letter-spacing: 5px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px var(--accent-blue);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px var(--accent-blue), 0 0 20px var(--accent-blue); }
+    to { text-shadow: 0 0 20px var(--accent-blue), 0 0 30px var(--accent-pink); }
+}
+
+#score-display {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a0f2e 100%);
+    border: 2px solid var(--accent-green);
+    border-radius: 10px;
+    padding: 15px 30px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.score-label {
+    color: var(--accent-pink);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-right: 10px;
+}
+
+.score-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    text-shadow: 0 0 15px var(--accent-green);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 5px;
+}
+
+#emulator-container {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    max-height: 600px;
+    background: #000;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Style spécifique pour le canvas NES */
+#emulator-container canvas,
+#emulator-container .nes-canvas {
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+.loading {
+    color: var(--accent-green);
+    font-size: 1.5rem;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+#controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#controls button {
+    background: linear-gradient(135deg, var(--accent-blue), #0088cc);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-family: 'Courier New', monospace;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+}
+
+#controls button:hover {
+    background: linear-gradient(135deg, #00fff0, var(--accent-blue));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+}
+
+#controls button:active {
+    transform: translateY(0);
+}
+
+#debug-info {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+#debug-info details {
+    cursor: pointer;
+}
+
+#debug-info summary {
+    color: var(--accent-blue);
+    font-weight: bold;
+    padding: 5px;
+    user-select: none;
+}
+
+.debug-content {
+    padding: 15px;
+    text-align: left;
+}
+
+.debug-content p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.memory-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.memory-table th {
+    background: rgba(0, 217, 255, 0.2);
+    padding: 8px;
+    border-bottom: 2px solid var(--accent-blue);
+    color: var(--accent-blue);
+    font-weight: bold;
+}
+
+.memory-table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.memory-table tbody tr:hover {
+    background: rgba(0, 217, 255, 0.1);
+}
+
+#game-instructions {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .score-value {
+        font-size: 2rem;
+    }
+    
+    #controls {
+        flex-direction: column;
+    }
+    
+    #controls button {
+        width: 100%;
+    }
+    
+    #emulator-container {
+        max-height: 400px;
+    }
+}
