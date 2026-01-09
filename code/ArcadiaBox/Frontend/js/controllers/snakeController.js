@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.querySelector('.screen-ui');
     const playBtn = document.getElementById('play-btn');
     const restartBtn = document.getElementById('restart-btn');
-    const sendScoreBtn = document.getElementById('send-score-btn');
+    // sendScoreBtn removed — envoi automatique à la fin de la partie
 
     const CELL = 20; // taille d’une case
     let COLS = 30;
@@ -263,6 +263,29 @@ document.addEventListener('DOMContentLoaded', () => {
             state = 'GAME_OVER';
             showOverlayGameOver();
             drawGameOver();
+
+            // demander pseudo et envoyer le score au backend
+            (async () => {
+                try {
+                    const pseudo = window.prompt('Entrer votre pseudo pour enregistrer le score :');
+                    if (!pseudo || !pseudo.trim()) {
+                        console.log('Envoi score annulé par l utilisateur');
+                        return;
+                    }
+                    const trimmed = pseudo.trim();
+                    const res = await sendScore(trimmed, game.score, 'Snake');
+                    if (res && res.ok) {
+                        alert('Score envoyé !');
+                    } else {
+                        alert('Erreur lors de l\'envoi du score.');
+                        console.warn('Réponse non OK:', res);
+                    }
+                } catch (err) {
+                    console.error('Erreur envoi score:', err);
+                    alert('Impossible d\'envoyer le score (erreur réseau).');
+                }
+            })();
+
             return;
         }
 
@@ -289,10 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     playBtn.addEventListener('click', onPlayClick);
     restartBtn.addEventListener('click', onRestartClick);
 
-    sendScoreBtn.addEventListener('click', async () => {
-        await sendScore(game.score);
-        alert('Score envoyé ! (placeholder)');
-    });
+    // sendScoreBtn listener removed — le score est envoyé automatiquement au Game Over
 
     window.addEventListener('resize', () => {
         dpr = Math.max(1, window.devicePixelRatio || 1);

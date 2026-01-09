@@ -1,4 +1,5 @@
 // ../js/services/snakeService.js
+import { API_URL } from '../config/config.js';
 export class SnakeGame {
     constructor(cols = 15, rows = 15) {
         this.cols = cols;
@@ -75,10 +76,19 @@ export class SnakeGame {
     }
 }
 
-/**
- * sendScore: placeholder pour envoyer le score à une API.
- */
-export async function sendScore(score) {
-    console.log('Envoi du score (placeholder):', { score, ts: Date.now() });
-    return new Promise((resolve) => setTimeout(() => resolve({ ok: true }), 300));
+
+export async function sendScore(pseudo, score, gameName = 'Snake') {
+    // envoi réel au backend
+    try {
+        const resp = await fetch(`${API_URL}/score/addscore`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pseudo, score, game: gameName })
+        });
+        return resp; // caller vérifie resp.ok
+    } catch (err) {
+        // repropager pour que le controller affiche une erreur
+        console.error('sendScore error', err);
+        throw err;
+    }
 }
