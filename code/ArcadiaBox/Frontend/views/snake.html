@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake</title>
+    <link rel="stylesheet" href="../style/snake.css">
+</head>
+<body>
+    <div class="top-bar" role="navigation" aria-label="barre supérieure">
+        <button class="btn" id="home-btn" type="button">Accueil</button>
+        <button class="btn" id="scores-btn" type="button">Tableau des scores</button>
+    </div>
+
+    <h1 class="title">Snake</h1>
+
+    <div class="console" role="region" aria-label="console rétro">
+        <div class="screen">
+            <!-- canvas : taille définie dynamiquement en JS pour rester net et sans décalage -->
+            <canvas id="game-canvas"></canvas>
+
+            <!-- overlay UI (Play / Restart) -->
+            <div class="screen-ui" aria-hidden="false">
+                <button class="btn" id="play-btn" type="button">Play</button>
+                <button class="btn" id="restart-btn" type="button">Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- bouton externe restant pour envoyer score -->
+    <button class="btn" id="send-score-btn" type="button">Envoyer le score</button>
+
+    <section class="how-to-play" aria-labelledby="howto-title">
+        <h2 id="howto-title">Comment jouer</h2>
+
+        <p>Déplacez le serpent pour manger la nourriture, gagnez des points et évitez les murs ainsi que votre propre corps.</p>
+
+        <div class="controls">
+            <div class="controls-column">
+                <h3>Clavier</h3>
+                <ul class="controls-list">
+                    <li><span class="key">← ↑ → ↓</span> — Déplacer le serpent (flèches)</li>
+                    <li><span class="key">A (ou touche A)</span> — Démarrer (si affiché Play)</li>
+                    <li><span class="key">R</span> — Restart (si besoin)</li>
+                </ul>
+            </div>
+
+            <div class="controls-column">
+                <h3>Manette (Xbox)</h3>
+                <ul class="controls-list">
+                    <li><span class="key">D‑pad</span> — Déplacer le serpent</li>
+                    <li><span class="key">Stick gauche</span> — Déplacer (tilt fort)</li>
+                    <li><span class="key">A</span> — Play / confirmer</li>
+                    <li><span class="key">Bouton Menu / Start</span> — (non utilisé actuellement)</li>
+                </ul>
+            </div>
+
+            <div class="controls-column">
+                <h3>Conseils</h3>
+                <ul class="controls-list">
+                    <li>Le bouton <strong>Play</strong> lance l'état READY ; appuyez ensuite sur une direction pour démarrer.</li>
+                    <li>La manette est détectée automatiquement. Appuyez sur <strong>A</strong> ou déplacez le stick/D‑pad pour commencer.</li>
+                    <li>Le jeu empêche les inversions directes (ex. gauche → droite immédiat).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="../js/controllers/snakeController.js"></script>
+    <script type="module" src="../js/services/snakeService.js"></script>
+</body>
+</html>

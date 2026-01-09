@@ -1,0 +1,134 @@
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f7f8fb 0%, #eef1f4 100%);
+    margin: 0;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #24303f;
+    min-height: 100vh;
+}
+
+/* Top bar */
+.top-bar {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+}
+
+.btn {
+    background: linear-gradient(145deg, #6c63ff 0%, #5a54e6 100%);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(108,99,255,0.12);
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+/* Title */
+.title {
+    font-size: 44px;
+    margin: 8px 0 18px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Console wrapper: decoration soft and not intrusive */
+.console {
+    background: linear-gradient(145deg, #efe0c8 0%, #e8d2a6 100%);
+    border-radius: 10px;
+    padding: 8px;
+    border: 1px solid rgba(154,21,21,0.18);
+    width: 50%;
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+}
+
+/* Screen: size is flexible, controlled by JS; default fallback */
+.screen {
+    position: relative;
+    background: #000;
+    border-radius: 8px;
+    box-shadow: inset 0 0 16px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Canvas: will be sized by JS to be pixel-perfect */
+#game-canvas {
+    display: block;
+    background: #000;
+    image-rendering: pixelated;
+}
+
+/* Overlay UI (buttons inside frame) - positioned at bottom and compact */
+.screen-ui {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    pointer-events: auto;
+    padding: 6px;
+    background: transparent;
+}
+
+.screen-ui.hidden {
+    display: none;
+}
+
+.screen-ui .btn {
+    min-width: 110px;
+    padding: 8px 12px;
+    font-size: 15px;
+    border-radius: 8px;
+}
+
+/* send-score outside */
+#send-score-btn {
+    margin: 14px 0;
+}
+
+/* How to play card */
+.how-to-play {
+    margin-top: 20px;
+    max-width: 720px;
+    background: #fff;
+    padding: 14px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    border: 1px solid #eaeaea;
+    text-align: left;
+}
+
+/* responsive adjustments */
+@media (max-width: 840px) {
+    .title { font-size: 34px; }
+    .screen { width: 320px; height: 350px; }
+    #game-canvas { margin-top: 6px; }
+}
+@media (max-width: 480px) {
+    .title { font-size: 26px; }
+    .screen { width: 300px; height: 340px; }
+    .screen-ui .btn { min-width: 86px; font-size: 13px; padding: 6px 10px; }
+}
