@@ -2,6 +2,8 @@ version: "3.9"
 
 services:
   db:
+    platforms:
+      - linux/arm64
     image: mysql:8.0
     container_name: db
     environment:
@@ -27,6 +29,8 @@ services:
       - app_net
 
   phpmyadmin:
+    platforms:
+      - linux/arm64
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     depends_on:
@@ -45,6 +49,8 @@ services:
       - app_net
   
   backend:
+    platforms:
+      - linux/arm64
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -64,6 +70,8 @@ services:
       - app_net
 
   frontend:
+    platforms:
+      - linux/arm64
     build:
       context: ./frontend
       dockerfile: Dockerfile
