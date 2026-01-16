@@ -47,7 +47,6 @@ export class EmulatorService {
         const romPath = '../roms/mario.nes';
         
         try {
-            console.log(`Chargement de la ROM depuis: ${romPath}`);
             const response = await fetch(romPath);
             
             if (!response.ok) {
@@ -57,8 +56,6 @@ export class EmulatorService {
             const arrayBuffer = await response.arrayBuffer();
             const romData = new Uint8Array(arrayBuffer);
             
-            console.log(`ROM chargée: ${romData.length} octets`);
-            
             // Vérification détaillée de l'en-tête iNES
             if (romData.length < 16) {
                 throw new Error('ROM trop petite (< 16 octets)');
@@ -66,7 +63,6 @@ export class EmulatorService {
             
             // Vérifier la signature iNES: 'NES' + 0x1A
             const signature = [romData[0], romData[1], romData[2], romData[3]];
-            console.log(`Signature: [${signature.map(b => '0x' + b.toString(16).toUpperCase()).join(', ')}]`);
             
             if (signature[0] !== 0x4E || signature[1] !== 0x45 || signature[2] !== 0x53 || signature[3] !== 0x1A) {
                 throw new Error(`Signature iNES invalide. Attendu: [0x4E, 0x45, 0x53, 0x1A], Reçu: [${signature.map(b => '0x' + b.toString(16)).join(', ')}]`);
@@ -75,20 +71,15 @@ export class EmulatorService {
             // Informations sur la ROM
             const prgRomPages = romData[4];
             const chrRomPages = romData[5];
-            console.log(`PRG ROM: ${prgRomPages} pages (${prgRomPages * 16}KB)`);
-            console.log(`CHR ROM: ${chrRomPages} pages (${chrRomPages * 8}KB)`);
             
             // Tenter de charger la ROM
             try {
                 this.emulator.loadROM(romData);
-                console.log('✓ ROM chargée avec succès dans l\'émulateur!');
             } catch (emulatorError) {
-                console.error('Erreur émulateur détaillée:', emulatorError);
                 
                 // Si c'est un problème de format, essayer de nettoyer la ROM
                 // Parfois il y a des données supplémentaires au début
                 if (romData.length > 16 && emulatorError.message.includes('Not a valid NES ROM')) {
-                    console.log('Tentative de nettoyage de la ROM...');
                     
                     // Chercher la vraie signature iNES dans les premiers octets
                     for (let offset = 0; offset < Math.min(512, romData.length - 16); offset++) {
@@ -97,10 +88,8 @@ export class EmulatorService {
                             romData[offset + 2] === 0x53 && 
                             romData[offset + 3] === 0x1A) {
                             
-                            console.log(`Signature trouvée à l'offset ${offset}`);
                             const cleanedRom = romData.slice(offset);
                             this.emulator.loadROM(cleanedRom);
-                            console.log('✓ ROM nettoyée et chargée!');
                             return;
                         }
                     }
@@ -180,5 +169,58 @@ Suggestions:
             if (!this.emulator || !this.emulator.cpu || !this.emulator.cpu.mem) return 0;
             return this.emulator.cpu.mem[address] || 0;
         };
+    }
+
+    async start(romPath, gameConfig) {
+        try {
+            this.gameConfig = gameConfig;
+            
+            const rom = await fetch(romPath).then(r => r.arrayBuffer());
+            
+            this.nostalgist = await Nostalgist.nes(rom, {
+                // ...existing code...
+            });
+
+            this.memoryScanner = new MemoryScanner(this.nostalgist, gameConfig);
+            this.startMonitoring();
+            
+            return this.nostalgist;
+
+        } catch (error) {
+            console.error('❌ Erreur lors du démarrage:', error);
+            throw error;
+        }
+    }
+
+    startMonitoring() {
+        if (this.monitoringInterval) {
+            clearInterval(this.monitoringInterval);
+        }
+
+        this.monitoringInterval = setInterval(() => {
+            if (!this.memoryScanner) return;
+
+            const gameState = this.memoryScanner.getGameState();
+
+            if (this.gameConfig.callbacks?.onScoreUpdate) {
+                this.gameConfig.callbacks.onScoreUpdate(gameState.score);
+            }
+
+            if (this.gameConfig.callbacks?.onLivesUpdate) {
+                this.gameConfig.callbacks.onLivesUpdate(gameState.lives);
+            }
+
+            if (gameState.isGameOver && !this.gameOverHandled) {
+                this.gameOverHandled = true;
+                if (this.gameConfig.callbacks?.onGameOver) {
+                    this.gameConfig.callbacks.onGameOver(gameState.score);
+                }
+            }
+
+            if (!gameState.isGameOver && this.gameOverHandled) {
+                this.gameOverHandled = false;
+            }
+
+        }, this.gameConfig.monitoringInterval || 100);
     }
 }

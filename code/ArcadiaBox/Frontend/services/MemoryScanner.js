@@ -3,17 +3,12 @@
  */
 export class MemoryScanner {
     constructor(nostalgistInstance, gameConfig) {
-        console.log('🔧 [SCANNER] Construction');
-        
         this.nostalgist = nostalgistInstance;
         this.config = gameConfig.memoryAddresses;
         this.wasmMemory = null;
         
         // ✅ Détection du mode d'adressage (Mario vs Galaga)
         this.useDirectOffsets = this.config.useDirectOffsets || false;
-        
-        console.log('✅ [SCANNER] Scanner créé');
-        console.log('📍 [SCANNER] Mode:', this.useDirectOffsets ? 'Offsets directs (Galaga)' : 'Adresses NES + Offset (Mario)');
     }
 
     getWasmMemory() {
